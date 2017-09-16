@@ -26,7 +26,7 @@ var Form = React.createClass({
 							<input type="number" min="0101" max="2017" className="form-control" id="end-year" />
 						</div>
 
-						<button type="submit" class="btn btn-default" class="center" id="search-btn">Search</button>
+						<button type="submit" className="btn btn-default" className="center" id="search-btn">Search</button>
 					</form>
 				</div>
 			</div>

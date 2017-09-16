@@ -27,11 +27,11 @@ var Main = React.createClass({
 					<Form />
 				</div>
 				
-				<div class="col-lg-12">
+				<div className="col-lg-12">
 					<Results />
 				</div>
 
-				<div class="col-lg-12">
+				<div className="col-lg-12">
 					<History />
 				</div>
 

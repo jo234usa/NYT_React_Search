@@ -11,7 +11,7 @@ var Results = React.createClass({
           <h3 className="panel-title text-center">Results</h3>
         </div>
         <div className="panel-body text-center">
-          <h1>Search Results</h1>
+          <h1>Results</h1>
         </div>
       </div>
     );

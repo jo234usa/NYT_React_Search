@@ -24,8 +24,8 @@ app.use(express.static("public"));
 // -------------------------------------------------
 
 // MongoDB Configuration configuration (Change this URL to your own DB)
-mongoose.connect("mongodb://admin:codingrocks@ds023664.mlab.com:23664/reactlocate");
-// MONGODB_URI: mongodb://heroku_n6qbzhk0:uqnl1gbd7o10js1sr3jurfon2o@ds123534.mlab.com:23534/heroku_n6qbzhk0
+mongoose.connect("MONGODB_URI: mongodb://heroku_n6qbzhk0:uqnl1gbd7o10js1sr3jurfon2o@ds123534.mlab.com:23534/heroku_n6qbzhk0");
+// 
 var db = mongoose.connection;
 
 db.on("error", function(err) {
@@ -48,7 +48,7 @@ app.get("/", function(req, res) {
 app.get("/api", function(req, res) {
 
   // We will find all the records, sort it in descending order, then limit the records to 5
-  History.find({}).sort([
+  Article.find({}).sort([
     ["date", "descending"]
   ]).limit(5).exec(function(err, doc) {
     if (err) {
@@ -62,12 +62,12 @@ app.get("/api", function(req, res) {
 
 // This is the route we will send POST requests to save each search.
 app.post("/api", function(req, res) {
-  console.log("BODY: " + req.body.location);
+  console.log("BODY: " + req.body.data);
 
   // Here we'll save the location based on the JSON input.
   // We'll use Date.now() to always get the current date time
-  History.create({
-    location: req.body.location,
+  Article.create({
+    data: req.body.location,
     date: Date.now()
   }, function(err) {
     if (err) {
