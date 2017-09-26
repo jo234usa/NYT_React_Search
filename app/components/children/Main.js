@@ -1,19 +1,17 @@
-var React = require("react");
+import React from "react";
 
-var Form = require("./children/Form");
-var Results = require("./children/Results");
-var History = require("./children/History");
+import Link from "react-router";
 
-var helpers = require("./utils/helpers");
+import Query from "./Search/Query";
+import Results from "./Search/Results";
+import Main from "./History";
 
-var Main = React.createClass({
-//setting the generic states
-	getInitialState: function(){
-		return {searchTerm: "", results: "", history:[]};
-	},
+import helpers from "./utils/helpers";
+
+export class Main extends React.Component({
 
 //What we're filling our div, id'ed app on Index.html with
-	render: function(){
+	render(){
 		return (
 			<div className="container">
 				<div className="row">
@@ -24,20 +22,19 @@ var Main = React.createClass({
 				</div>
 
 				<div className="col-lg-12">
-					<Form />
+					<Query onSubmit={this.prop.children}/>
 				</div>
 				
 				<div className="col-lg-12">
+					<br />
 					<Results />
 				</div>
 
 				<div className="col-lg-12">
-					<History />
+					<Main />
 				</div>
 
 			</div>
 		);
 	}	
 });
-
-module.exports = Main;

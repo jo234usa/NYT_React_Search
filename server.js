@@ -4,8 +4,8 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
-// Require History Schema
-var History = require("./models/History");
+// Require Article Schema
+var Article = require("./models/Article");
 
 // Create Instance of Express
 var app = express();
@@ -23,7 +23,7 @@ app.use(express.static("public"));
 
 // -------------------------------------------------
 
-// MongoDB Configuration configuration (Change this URL to your own DB)
+// MongoDB Configuration configuration
 mongoose.connect("MONGODB_URI: mongodb://heroku_n6qbzhk0:uqnl1gbd7o10js1sr3jurfon2o@ds123534.mlab.com:23534/heroku_n6qbzhk0");
 // 
 var db = mongoose.connection;
@@ -38,16 +38,11 @@ db.once("open", function() {
 
 // -------------------------------------------------
 
-// Main "/" Route. This will redirect the user to our rendered React application
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/public/index.html");
-});
-
 // This is the route we will send GET requests to retrieve our most recent search data.
 // We will call this route the moment our page gets rendered
-app.get("/api", function(req, res) {
+app.get("/api/saved", function(req, res) {
 
-  // We will find all the records, sort it in descending order, then limit the records to 5
+// We will find all the records, sort it in descending order, then limit the records to 5
   Article.find({}).sort([
     ["date", "descending"]
   ]).limit(5).exec(function(err, doc) {
@@ -61,27 +56,40 @@ app.get("/api", function(req, res) {
 });
 
 // This is the route we will send POST requests to save each search.
-app.post("/api", function(req, res) {
-  console.log("BODY: " + req.body.data);
+app.post("/api/saved", function(req, res) {
+  var newArticle = new Article(req.body);
 
-  // Here we'll save the location based on the JSON input.
-  // We'll use Date.now() to always get the current date time
-  Article.create({
-    data: req.body.location,
-    date: Date.now()
-  }, function(err) {
+  console.log("BODY: " + req.body);
+
+  newArticle.save(function(err, doc) {
     if (err) {
       console.log(err);
     }
     else {
-      res.send("Saved Search");
+      res.send(doc);
     }
   });
 });
 
+app.delete("/api/saved", function(req, res){
+
+  var url = req.param("url");
+
+  Article.find({ url: url }).remove().exec(function(err){
+    if (err) throw "err";
+    else {
+      res.send("Good-bye!");
+    }
+  });
+});
+
+app.get("*", function(req, res) {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 // -------------------------------------------------
 
-// Listener
+// App listening on port 3000
 app.listen(PORT, function() {
   console.log("App listening on PORT: " + PORT);
 });

@@ -1,21 +1,86 @@
 var React = require("react");
 
-var History = React.createClass({
-	render: function(){
+var helpers = require("../utils/helpers");
+
+var Main = React.createClass({
+
+	getInitialState: function(){
+		return { savedArticles: ""};
+	},
+
+	componentDidMount: function(){
+		helpers.getSaved().then(function(articleData){
+			this.setState({ savedArticles: articleData.data });
+		}.bind(this));
+	},
+
+	handleClick: function(item) {
+
+		helpers.deleteSaved(item.title, item.date, item.url).then(function(){
+
+			helpers.getSaved().then(function(articleData){
+				this.setState({ savedArticles: articleData.data });
+			}.bind(this));
+		// ending for helpers.deleteSaved
+		}.bind(this));
+	},
+
+// only runs when there are no saved articles
+	renderEmpty: function(){
 		return (
-			<div className="panel panel-default">
-				<div className="panel-heading">
-					<h3 className="panel-title text-center">Saved Articles</h3>
-				</div>
+			<li>
+				<h3>Save your first article...</h3>
+			</li>
+		);
+	},
 
-				<div className="panel-body text-center" id="well-section">
+	renderArticles: function() {
+		return (
+			<div key={index}>
+				<li className="list-group-item">
+					<h3>
+						<span>
+							<em>{article.title}</em>
+						</span>
+						<span className="btn-group pull-right">
+							<a href={article.url} rel="noopener noreferrer" target="_blank">
+								<button className="btn btn-primary" onClick={() => this.handleClick(article)}>Delete</button>
+							</a>
+						</span>
+					</h3>
+					<p>Date Published: {article.date}</p>
+				</li>
+			</div>
+		);
+	}.bind(this),
 
-				{/* Here we use a map function to loop through an array in JSX */}
-				
+	renderContainer: function(){
+		return(
+			<div className="main-container">
+				<div className="row">
+					<div className="col-lg-12">
+						<div className="panel panel-primary">
+							<div className="panel-heading">
+								<h1 className="panel-title"> Saved Article </h1>
+							</div>
+							<div className="panel-body">
+								<ul className="list-group">
+								 {this.renderArticles()}
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
+	},
+
+	render: function() {
+		if (!this.state.savedArticles){
+			return this.renderEmpty();
+		}
+		return this.renderContainer();
 	}
 });
 
-module.exports = History;
+module.exports = Main;
